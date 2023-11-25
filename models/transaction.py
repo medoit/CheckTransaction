@@ -1,22 +1,25 @@
-import datetime
-from typing import List
-from models.sub import Sub
+from datetime import datetime
+from pydantic import BaseModel
 
-class Transaction():
-
-    def __init__(self, terminal, type, date, time, series, num_ticket, price, pan):
-        self.terminal : int = terminal
-        self.type : int = type
-        self.date : datetime = date
-        self.time : datetime = time
-        self.series : int = series
-        self.num_ticket : int = num_ticket
-        self.price : int = price
-        self.pan : str = pan
-
+class Transaction(BaseModel):
+    terminal : int
+    type : int
+    date : datetime
+    time : datetime
+    series : int
+    num_ticket : int
+    price : int
+    pan : str
+    
     def __str__(self):
-        return f'{self.terminal}, {self.type}, {self.date}, {self.time}, {self.series}, {self.num_ticket}, {self.price}, {self.pan}'
+        return f'{self.terminal}, {self.type}, {self.get_str_date()}, {self.get_str_time()}, {self.series}, {self.num_ticket}, {self.price}, {self.pan}'
+    
+    def get_str_date(self):
+        return self.date.strftime('%d.%m.%y')
+    
+    def get_str_time(self):
+        return self.time.strftime('%H:%M:%S')
     
 def get_diff_date(date_d, date_t, date_s):
-    result = (datetime.datetime.strptime(date_d + ' ' + date_t, '%d.%m.%y %H:%M:%S') - date_s).days
+    result = (datetime.strptime(date_d + ' ' + date_t, '%d.%m.%y %H:%M:%S') - date_s).days
     return result

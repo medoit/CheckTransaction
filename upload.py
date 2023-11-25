@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 from typing import List
 from models.snls import Snls
 from models.sub import Sub
@@ -19,17 +19,37 @@ def load_subs(filepath):
     with open(filepath) as f:
         for line in f:
             el = line.split(';')
-            sub_all.append(Sub(el[0],el[1],format_date(el[2]),format_date(el[3]),format_date(el[4]),el[5].replace('"', '').strip()))
+            sub_all.append(
+                Sub(
+                    id = int(el[0]),
+                    series = el[1],
+                    since = format_date(el[2]),
+                    till = format_date(el[3]),
+                    sale_date = format_date(el[4]),
+                    pan = el[5].replace('"', '').strip()
+                )
+            )
     return sub_all
 
 def load_transactions(filepath):
     transactions : List[Transaction] = []
     with open(filepath) as f:
-        first_line = f.readline().split()
+        terminal = int(f.readline().split()[8])
         for line in f:
             el = line.split()
             if el[1] == '32':
-                transactions.append(Transaction(first_line[8], el[1], el[2], el[3], el[5], el[13], el[15].replace('0', ''), el[16].strip()))
+                transactions.append(
+                    Transaction(
+                        terminal = terminal,
+                        type = int(el[1]),
+                        date = format_date(el[2]),
+                        time = format_date(el[3]),
+                        series = int(el[5]),
+                        num_ticket = int(el[13]),
+                        price = int(el[15]),
+                        pan = el[16].strip()
+                        )
+                    )
     return transactions
 
 def load_terminal(filepath):
@@ -37,12 +57,17 @@ def load_terminal(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         for line in f:
             el = line.split(';')
-            list_terminal.append(Terminal(el[0],
-                                        el[1],
-                                        el[2],
-                                        format_date(el[3]),
-                                        el[4],
-                                        el[5]))
+            print
+            list_terminal.append(
+                Terminal(
+                    number = int(el[0]),
+                    serial_number = int(el[1]),
+                    discription = el[2],
+                    last_date_update = format_date(el[3]),
+                    status_update = el[4],
+                    revision = el[5]
+                    )
+                )
     return list_terminal
 
 def count(subs):

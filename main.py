@@ -13,11 +13,12 @@ def get_transactions_sub(list_transactions : List[Transaction], list_pan : List[
             transactions_sub.append(el)
     return transactions_sub
 
-def get_transaction_bad(transactions_sub : List[Transaction]):
+def get_transaction_bad(transactions_sub : List[Transaction], list_subs : List[Sub]):
     bad_list : List[Transaction] = []
     count = 0
     for el in transactions_sub:
-        if el.series == '96':
+        sub : Sub = get_sub(el.pan, list_subs)
+        if el.series == 96 and (el.date - sub.sale_date).days > 1:
             bad_list.append(el)
             count = count + 1
     return bad_list
@@ -32,7 +33,6 @@ def print_list_transaction(list_transactions : List[Transaction]):
         print(el)
 
 list_terminal = load_terminal("source\\terminals_221123.txt")
-print(*list_terminal)
 list_snls = load_snls("source\\snls_221123.txt")
 save_in_file("result\\snls.txt", list_snls)
 list_subs = get_actual_list_subs(load_subs('source\\subs_221123.txt'))
@@ -41,15 +41,6 @@ list_pan = get_list_pan_snls(list_snls)
 list_transactions = load_multiple()
 save_in_file("result\\transactions.txt", list_snls)
 list_transactions_sub = get_transactions_sub(list_transactions, list_pan)
-list_transactions_bad = get_transaction_bad(list_transactions_sub)
-# print_list_transaction(list_transactions_bad)
-# check_list_transaction(list_transactions_bad, list_subs)
-
-
-
-# list_pan = get_list_pan_snls(list_snls)
-# list_last = []
-# for el in list_subs:
-#     if el.pan not in list_pan:
-#         list_last.append(el.pan)
-# print(*list_last)
+list_transactions_bad = get_transaction_bad(list_transactions_sub, list_subs)
+print_list_transaction(list_transactions_bad)
+save_in_file("result\\transactions_bad.txt", list_transactions_bad)
