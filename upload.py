@@ -46,7 +46,7 @@ def load_transactions(filepath):
                         time = format_date(el[3]),
                         series = int(el[5]),
                         num_ticket = int(el[13]),
-                        price = int(el[15]),
+                        price = int(el[15]) / 100,
                         pan = el[16].strip()
                         )
                     )
