@@ -89,3 +89,5 @@ def load_multiple():
                     transactions_el = load_transactions(path + "//" + month + "//" + day + "//" + file)
                     transactions_all = transactions_all + transactions_el
     return transactions_all
+
+test
